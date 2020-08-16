@@ -1,127 +1,78 @@
 Hmily
 ================
+[![Build Status](https://api.travis-ci.org/dromara/hmily.svg?branch=master&status=created)](https://travis-ci.org/github/dromara/hmily)
+[![codecov](https://codecov.io/gh/dromara/hmily/branch/master/graph/badge.svg)](https://codecov.io/gh/dromara/hmily)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2f0a0191b02448e6919aca6ce12a1584)](https://app.codacy.com/app/Dromara/hmily?utm_source=github.com&utm_medium=referral&utm_content=Dromara/hmily&utm_campaign=Badge_Grade_Settings)
+[![Total lines](https://tokei.rs/b1/github/Dromara/hmily?category=lines)](https://github.com/Dromara/hmily)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/Dromara/hmily/blob/master/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/org.dromara/hmily.svg?label=maven%20central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.dromara%22%20AND%20hmily)
+[![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://shang.qq.com/wpa/qunwpa?idkey=2e9e353fa10924812bc58c10ab46de0ca6bef80e34168bccde275f7ca0cafd85)
 
-### 分布式事务方案之tcc开源框架。基于java语言来开发（JDK1.8），支持dubbo，springcloud等rpc框架进行分布式事务。
+#### 分布式事务解决方案全景图
+ ![](https://yu199195.github.io/images/hmily/hmily.png) 
 
- # Features
+#  功能
 
- * **框架特性**
+   *  高可靠性 ：支持分布式场景下，事务异常回滚，超时异常恢复，防止事务悬挂
+   
+   *  易用性 ：提供零侵入性式的 `Spring-Boot`, `Spring-Namespace` 快速与业务系统集成
+   
+   *  高性能 ：去中心化设计，与业务系统完全融合，天然支持集群部署
+   
+   *  可观测性 ：Metrics多项指标性能监控，以及admin管理后台UI展示
+   
+   *  多种RPC ： 支持 `Dubbo`, `SpringCloud`,`Montan` 等知名RPC框架
+   
+   *  日志存储 ： 支持 `mysql`, `oracle`, `mongodb`, `redis`, `zookeeper` 等方式
+   
+   *  复杂场景 ： 支持RPC嵌套调用事务
+   
+
+# 必要前提 
+
+  * 必须使用 `JDK8+` 
+  
+  * TCC模式必须要使用一款 `RPC` 框架, 比如 : `Dubbo`, `SpringCloud`,`Montan`
+  
+
+# TCC模式
+
+ ![](https://yu199195.github.io/images/hmily/hmily-tcc.png) 
  
-     * ##### 支持嵌套事务(Nested transaction support).
+   当使用`TCC`模式的时候,用户根据自身业务需求提供 `try`, `confirm`, `cancel` 等三个方法，
+   并且 `confirm`, `cancel` 方法由自身完成实现，框架只是负责来调用，来达到事务的一致性。
 
-     * ##### 采用disruptor框架进行事务日志的异步读写，与RPC框架的性能毫无差别。
+# TAC模式  
+   ![](https://yu199195.github.io/images/hmily/hmily-tac.png) 
+   
+   当用户使用`TAC`模式的时候，用户必须使用关系型数据库来进行业务操作，框架会自动生成`回滚SQL`,
+   当业务异常的时候，会执行`回滚SQL`来达到事务的一致性。
+   
+# 文档
 
-     * ##### 支持SpringBoot-starter 项目启动，使用简单。
+   如果你想使用，你可以参考[Quick Start](http://dromara.org/website/zh-cn/docs/hmily/index.html)   
+  
+# 关于Hmily 
+    
+   Hmily是柔性分布式事务解决方案，提供了`TCC` 与 `TAC` 模式。
+   
+   它以零侵入以及快速集成方式能够方便的被业务进行整合。
+   
+   在性能上，日志存储异步（可选）以及使用异步执行的方式，不损耗业务方法方法。
+   
+   之前是由我个人开发，目前由我在京东数科已经重新启动，未来将会是金融场景的分布式事务解决方案。
 
-     * ##### RPC框架支持 : dubbo,motan,springcloud。
+  
+# 关注趋势
 
-     * ##### 本地事务存储支持 : redis,mongodb,zookeeper,file,mysql。
+[![Stargazers over time](https://starchart.cc/yu199195/hmily.svg)](https://starchart.cc/yu199195/hmily) 
+ 
+# 用户墙
+ 
+# 支持
 
-     * ##### 事务日志序列化支持 ：java，hessian，kryo，protostuff。
-
-     * ##### 采用Aspect AOP 切面思想与Spring无缝集成，天然支持集群。
-
-     * ##### 内置经典的分布式事务场景demo工程，并有swagger-ui可视化界面可以快速体验。
-
-
-#  源码解析博客
-
-  * ## https://yu199195.github.io/categories/hmily-tcc/
-
-
-#  视频详解
-
-  * ## 环境搭建以及运行 : http://www.iqiyi.com/w_19rwkrfu69.html#vfrm=16-1-1-1
-  * ## 源码详解以及调试 : http://www.iqiyi.com/w_19rwkreutt.html
-
-
-# Prerequisite
-
-  *   #### JDK 1.8+
-
-  *   #### Maven 3.2.x
-
-  *   #### Git
-
-  *   ####  RPC framework dubbo or motan or springcloud。
-
-
-# Spring-Boot-Starter-Support
-
-   * ### [Spring-Boot-Starter](https://github.com/yu199195/hmily/wiki/Spring-Boot-Starter)
-
-
-# TCC原理介绍
-
-  * ###  https://github.com/yu199195/hmily/wiki/Theory
-
-#   Configuration
-
-  * ###  https://github.com/yu199195/hmily/wiki/Configuration
-
-
-# Quick Start
-
- * #### Clone & Build
-   ```
-   > git clone https://github.com/yu199195/hmily.git
-
-   > cd hmily
-
-   > mvn -DskipTests clean install -U
-   ```
-
-* #### execute this sql       
-    https://github.com/yu199195/hmily/blob/master/hmily-tcc-demo/sql/tcc-demo.sql
-
-* #### Find the RPC framework that works for you
-    https://github.com/yu199195/hmily/tree/master/hmily-tcc-demo
-* ### [Dubbo-Quick-Start](https://github.com/yu199195/hmily/wiki/Dubbo-Quick-Start)
-
-* ### [SpringCloud-Quick-Start](https://github.com/yu199195/hmily/wiki/SpringCloud-Quick-Start)
+  ![](https://yu199195.github.io/images/qq.png)    ![](https://yu199195.github.io/images/public.jpg)
+ 
 
 
 
-
-
-# User Guide
-
-* #### 关于jar包引用问题，现在jar包还未上传到maven的中央仓库，所以使用者需要自行获取代码，然后打包上传到自己maven私服
-
-   ```
-   > git clone https://github.com/yu199195/hmily.git
-
-   > mvn -DskipTests clean deploy -U
-   ```
-* #### 关于jar包版本问题 ，现在因为没有传到中央仓库，如果引用的话，请自行设置相应的版本。
-
-
-*  ## [Dubbo User Guide](https://github.com/yu199195/hmily/wiki/Dubbo-User-Guide)
-
-*  ## [SpringCloud User Guide](https://github.com/yu199195/hmily/wiki/SpringCloud-User-Gruid)
-
-
-
-# FAQ
-
-* ### 为什么我下载的代码后，用idea打开没有相应的get set 方法呢？
-   ##### 答：因为框架使用了Lombok包，它是在编译的时期，自动生成get set方法，并不影响运行，如果觉得提示错误难受，请自行下载lombok包插件，[lombok官网](http://projectlombok.org/)
-
-* ### 为什么我运行demo工程，找不到applicationContent.xml呢？
-  ##### 答：请设置项目的资源文件夹。
-
-* ### 为什么我启动tcc-admin项目的时候，会报mongo 集群连接错误呢？
-  ##### 答：这是因为项目里面有mongo代码，spring boot会自动配置，该错误没有关系，只要admin项目能正常启动就行。
-
-
-
-# Support
-
- * ###  如有任何问题欢迎加入QQ群进行讨论
-   ![](https://yu199195.github.io/images/qq.png)
-
-
- * ###  微信公众号
-   ![](https://yu199195.github.io/images/public.jpg)
-
- # Contribution
